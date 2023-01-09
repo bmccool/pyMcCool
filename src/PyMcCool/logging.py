@@ -56,6 +56,9 @@ class Logger:
             return getattr(self._logger, name)
         raise AttributeError(f"Logger has no attribute '{name}'")
 
+    def verbose(self, msg, *args, **kwargs):
+        self._logger.log(logging.DEBUG - 1, msg, *args, **kwargs)
+
 
 class TimeSeriesLogger:
     #from datetime import datetime

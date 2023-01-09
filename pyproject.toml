@@ -1,5 +1,5 @@
 [project]
-name = "PyMcCool"
+name = "pymccool"
 version = "0.0.1"
 authors = [
   { name="Brendon McCool", email="brendonmccool@gmail.com" },
