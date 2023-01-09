@@ -3,8 +3,19 @@ from logging.handlers import RotatingFileHandler
 import sys
 import os
 
+
+
 class Logger:
-    def __init__(self, app_name: str="default_logger", default_level: int=logging.DEBUG):
+    CRITICAL = 50
+    FATAL = CRITICAL
+    ERROR = 40
+    WARNING = 30
+    WARN = WARNING
+    INFO = 20
+    DEBUG = 10
+    VERBOSE = 5
+    NOTSET = 0
+    def __init__(self, app_name: str="default_logger", default_level: int=logging.DEBUG, **kwargs):
         # Create logger based on application name
         self.app_name = app_name
         self._logger = logging.getLogger(self.app_name)
@@ -30,15 +41,19 @@ class Logger:
         info_file_handler.setLevel(logging.INFO)
         info_file_handler.setFormatter(formatter)
 
-        # Stream Handler for light messaging (info?)
+        # Stream Handler for light messaging
+        stream_level = kwargs.pop('stream_level', logging.INFO)
+        #print(f"stream_level is: {stream_level}")
         stream_handler = logging.StreamHandler(sys.stdout)
-        stream_handler.setLevel(logging.INFO)
+        stream_handler.setLevel(stream_level)
         stream_handler.setFormatter(formatter)
 
         # Add the log handlers to the logger
         self._logger.addHandler(debug_file_handler)
         self._logger.addHandler(info_file_handler)
         self._logger.addHandler(stream_handler)
+
+        logging.addLevelName(self.VERBOSE, "VERBOSE-1")
 
 
     def create_directories(self):
@@ -57,7 +72,10 @@ class Logger:
         raise AttributeError(f"Logger has no attribute '{name}'")
 
     def verbose(self, msg, *args, **kwargs):
-        self._logger.log(logging.DEBUG - 1, msg, *args, **kwargs)
+        self._logger.log(self.VERBOSE, msg, *args, **kwargs)
+
+    def close(self):
+        logging.shutdown()
 
 
 class TimeSeriesLogger:
