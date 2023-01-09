@@ -1,4 +1,4 @@
-from pym.logging import Logger
+from pymccool.logging import Logger
 from contextlib import redirect_stdout
 import io
 
