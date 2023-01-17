@@ -2,11 +2,18 @@ import logging
 from logging.handlers import RotatingFileHandler
 import sys
 import os
+import pprint
 
 from colorlog import ColoredFormatter
 
 
 class Logger:
+    """
+    Opinionated logger with built in creature comforts
+    kwargs:
+        stream_color bool: turns on or off terminal colors for stream handler
+        stream_level int: Sets the logging level for the stream handler
+    """
     CRITICAL = 50
     FATAL = CRITICAL
     ERROR = 40
@@ -93,6 +100,12 @@ class Logger:
 
     def close(self):
         logging.shutdown()
+
+    def pretty(self, object, *args, **kwargs):
+        
+        formatted_record = pprint.pformat(object, indent=4).split("\n")
+        for line in formatted_record:
+            self._logger.log(self.INFO, line, stacklevel=2, *args, **kwargs)
 
 
 class TimeSeriesLogger:

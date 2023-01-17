@@ -1,6 +1,7 @@
 from pymccool.logging import Logger
 from contextlib import redirect_stdout
 import io
+import pprint
 
 def test_logger():
     print()
@@ -48,3 +49,34 @@ def test_logger_verbose():
     assert "Test Verbose" in logged_lines[0]
 
 
+
+def test_logger_pprint():
+    print()
+    s = io.StringIO()
+    with redirect_stdout(s):
+        a = {"TODO": ["Don't Change Your Number"], "Name": "Jenny", "Number": 8675309, "Numbers": ["Eight", "Six", "Seven", "Five", "Three", "Oh", "Nine"]}
+        logger = Logger(app_name="test_logger", stream_color=False)
+        logger.pretty(a)
+
+    logged_lines = s.getvalue().strip("\n").split("\n")
+    assert len(logged_lines) == 4
+    
+    line_no = 0
+    assert "INFO" in logged_lines[line_no]
+    assert "test_logger.test_logger.test_logger_pprint" in logged_lines[line_no]
+    assert "'Name': 'Jenny'" in logged_lines[line_no]
+
+    line_no += 1
+    assert "INFO" in logged_lines[line_no]
+    assert "test_logger.test_logger.test_logger_pprint" in logged_lines[line_no]
+    assert "'Number': 8675309," in logged_lines[line_no]
+
+    line_no += 1
+    assert "INFO" in logged_lines[line_no]
+    assert "test_logger.test_logger.test_logger_pprint" in logged_lines[line_no]
+    assert "'Numbers': ['Eight', 'Six', 'Seven', 'Five', 'Three', 'Oh', 'Nine']," in logged_lines[line_no]
+
+    line_no += 1
+    assert "INFO" in logged_lines[line_no]
+    assert "test_logger.test_logger.test_logger_pprint" in logged_lines[line_no]
+    assert "'TODO': [\"Don't Change Your Number\"]}" in logged_lines[line_no]
