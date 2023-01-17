@@ -3,6 +3,7 @@ from logging.handlers import RotatingFileHandler
 import sys
 import os
 
+from colorlog import ColoredFormatter
 
 
 class Logger:
@@ -29,7 +30,20 @@ class Logger:
         # Create the formatter for the logs
         # TODO Create colored logs
         formatter = logging.Formatter(  
-            '[%(asctime)s:%(levelname)s:%(name)s:%(module)s:%(funcName)s:%(message)s')
+            '[%(asctime)s:%(levelname)-8s] %(name)s.%(module)s.%(funcName)s -> %(message)s')
+        formatter_c = ColoredFormatter(
+            '%(log_color)s[%(asctime)s:%(levelname)-8s] %(name)s.%(module)s.%(funcName)s -> %(reset)s%(message)s',
+            reset=True,
+            log_colors={
+                'DEBUG':    'cyan',
+                'INFO':     'green',
+                'WARNING':  'yellow',
+                'ERROR':    'red',
+                'CRITICAL': 'red,bg_white',
+            },
+        )
+
+        
 
         # Rotating file handler for debug messages
         debug_file_handler = RotatingFileHandler(filename=f'Logs/Debug/{app_name}_debug.log', maxBytes=1000000, backupCount=100)
@@ -43,10 +57,13 @@ class Logger:
 
         # Stream Handler for light messaging
         stream_level = kwargs.pop('stream_level', logging.INFO)
-        #print(f"stream_level is: {stream_level}")
+        stream_color = kwargs.pop('stream_color', True)
         stream_handler = logging.StreamHandler(sys.stdout)
         stream_handler.setLevel(stream_level)
-        stream_handler.setFormatter(formatter)
+        if stream_color:
+            stream_handler.setFormatter(formatter_c)
+        else:
+            stream_handler.setFormatter(formatter)
 
         # Add the log handlers to the logger
         self._logger.addHandler(debug_file_handler)
