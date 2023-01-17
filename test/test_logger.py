@@ -56,7 +56,7 @@ def test_logger_pprint():
     with redirect_stdout(s):
         a = {"TODO": ["Don't Change Your Number"], "Name": "Jenny", "Number": 8675309, "Numbers": ["Eight", "Six", "Seven", "Five", "Three", "Oh", "Nine"]}
         logger = Logger(app_name="test_logger", stream_color=False)
-        logger.pretty(a)
+        logger.pretty(Logger.INFO, a)
 
     logged_lines = s.getvalue().strip("\n").split("\n")
     assert len(logged_lines) == 4

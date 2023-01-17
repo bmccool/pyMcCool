@@ -101,11 +101,15 @@ class Logger:
     def close(self):
         logging.shutdown()
 
-    def pretty(self, object, *args, **kwargs):
+    def pretty(self, loglevel: int, object, *args, **kwargs):
+        """
+        Pretty logging for nested objects
+        Use Logger.INFO/DEBUG/VERBOSE etc. for loglevel
+        """
         
         formatted_record = pprint.pformat(object, indent=4).split("\n")
         for line in formatted_record:
-            self._logger.log(self.INFO, line, stacklevel=2, *args, **kwargs)
+            self._logger.log(loglevel, line, stacklevel=2, *args, **kwargs)
 
 
 class TimeSeriesLogger:
