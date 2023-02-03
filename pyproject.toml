@@ -1,12 +1,12 @@
 [project]
 name = "pymccool"
-version = "0.2.0"
+version = "0.2.1"
 authors = [
   { name="Brendon McCool", email="brendonmccool@gmail.com" },
 ]
 description = "Reusable Python Utilities by McCool"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
