@@ -28,6 +28,10 @@ class Logger:
         self.app_name = app_name
         self._logger = logging.getLogger(self.app_name)
 
+        if len(self._logger.handlers) > 0:
+            # This logger already exists!  We don't support "updating" a logger by re-instantiation
+            return
+
         # Set default log level - Only process logs at this level or more severe
         self._logger.setLevel(default_level)
 

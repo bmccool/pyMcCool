@@ -80,3 +80,29 @@ def test_logger_pprint():
     assert "INFO" in logged_lines[line_no]
     assert "test_logger.test_logger.test_logger_pprint" in logged_lines[line_no]
     assert "'TODO': [\"Don't Change Your Number\"]}" in logged_lines[line_no]
+
+def test_multiple_instantion():
+    print()
+
+    s = io.StringIO()
+    with redirect_stdout(s):
+        logger = Logger(app_name="test_logger")
+        logger = Logger(app_name="test_logger")
+        logger = Logger(app_name="test_logger")
+        logger.verbose("Test Verbose") # Verbose is below the default threshold, will not be printed
+        logger.info("Test Info")
+        logger.debug("Test Debug") # Debug is below the default threshold, will not be printed
+        logger.warning("Test Warning")
+        logger.critical("Test Critical")
+        logger.error("Test Error")
+
+    logged_lines = s.getvalue().strip("\n").split("\n")
+    assert len(logged_lines) == 4
+    assert "INFO" in logged_lines[0]
+    assert "Test Info" in logged_lines[0]
+    assert "WARNING" in logged_lines[1]
+    assert "Test Warning" in logged_lines[1]
+    assert "CRITICAL" in logged_lines[2]
+    assert "Test Critical" in logged_lines[2]
+    assert "ERROR" in logged_lines[3]
+    assert "Test Error" in logged_lines[3]
