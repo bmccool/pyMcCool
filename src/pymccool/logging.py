@@ -29,7 +29,7 @@ class Logger:
         self._logger = logging.getLogger(self.app_name)
 
         if len(self._logger.handlers) > 0:
-            # This logger already exists!  We don't support "updating" a logger by re-instantiation
+            # This logger already exists!  We don't support *updating* a logger by re-instantiation")
             return
 
         # Set default log level - Only process logs at this level or more severe
@@ -103,7 +103,12 @@ class Logger:
         self._logger.log(self.VERBOSE, msg, *args, **kwargs)
 
     def close(self):
-        logging.shutdown()
+        while len(self._logger.handlers) > 0:
+            handler = self._logger.handlers[0]
+            self._logger.removeHandler(handler)
+            handler.close()
+
+        del self._logger
 
     def pretty(self, loglevel: int, object, *args, **kwargs):
         """

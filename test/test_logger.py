@@ -1,10 +1,8 @@
 from pymccool.logging import Logger
 from contextlib import redirect_stdout
 import io
-import pprint
 
 def test_logger():
-    print()
     s = io.StringIO()
     with redirect_stdout(s):
         logger = Logger(app_name="test_logger")
@@ -29,7 +27,6 @@ def test_logger():
     logger.close()
 
 def test_logger_verbose():
-    print()
     s = io.StringIO()
     with redirect_stdout(s):
         logger = Logger(app_name="test_logger_verbose", default_level=Logger.VERBOSE, stream_level=Logger.VERBOSE)
@@ -41,17 +38,16 @@ def test_logger_verbose():
     assert logger._logger.level == logger.VERBOSE
     assert logger._logger.isEnabledFor(logger.VERBOSE)
 
-    for handler in handlers: print(handler)
-
     logged_lines = s.getvalue().strip("\n").split("\n")
     assert len(logged_lines) == 1
     assert "VERBOSE-1" in logged_lines[0]
     assert "Test Verbose" in logged_lines[0]
 
+    logger.close()
+
 
 
 def test_logger_pprint():
-    print()
     s = io.StringIO()
     with redirect_stdout(s):
         a = {"TODO": ["Don't Change Your Number"], "Name": "Jenny", "Number": 8675309, "Numbers": ["Eight", "Six", "Seven", "Five", "Three", "Oh", "Nine"]}
@@ -81,9 +77,9 @@ def test_logger_pprint():
     assert "test_logger.test_logger.test_logger_pprint" in logged_lines[line_no]
     assert "'TODO': [\"Don't Change Your Number\"]}" in logged_lines[line_no]
 
-def test_multiple_instantion():
-    print()
+    logger.close()
 
+def test_multiple_instantion():
     s = io.StringIO()
     with redirect_stdout(s):
         logger = Logger(app_name="test_logger")
@@ -106,3 +102,5 @@ def test_multiple_instantion():
     assert "Test Critical" in logged_lines[2]
     assert "ERROR" in logged_lines[3]
     assert "Test Error" in logged_lines[3]
+
+    logger.close()
