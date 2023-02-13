@@ -23,7 +23,11 @@ class Logger:
     DEBUG = 10
     VERBOSE = 5
     NOTSET = 0
-    def __init__(self, app_name: str="default_logger", default_level: int=logging.DEBUG, **kwargs):
+
+    def __init__(self,
+                 app_name: str = "default_logger",
+                 default_level: int = logging.DEBUG,
+                 **kwargs):
         # Create logger based on application name
         self.app_name = app_name
         self._logger = logging.getLogger(self.app_name)
@@ -40,29 +44,34 @@ class Logger:
 
         # Create the formatter for the logs
         # TODO Create colored logs
-        formatter = logging.Formatter(  
-            '[%(asctime)s:%(levelname)-8s] %(name)s.%(module)s.%(funcName)s:%(lineno)d -> %(message)s')
+        formatter = logging.Formatter(
+            '[%(asctime)s:%(levelname)-8s] %(name)s.%(module)s.%(funcName)s:%(lineno)d -> %(message)s'
+        )
         formatter_c = ColoredFormatter(
             '%(log_color)s[%(asctime)s:%(levelname)-8s] %(name)s.%(module)s.%(funcName)s:%(lineno)d -> %(reset)s%(message)s',
             reset=True,
             log_colors={
-                'DEBUG':    'cyan',
-                'INFO':     'green',
-                'WARNING':  'yellow',
-                'ERROR':    'red',
+                'DEBUG': 'cyan',
+                'INFO': 'green',
+                'WARNING': 'yellow',
+                'ERROR': 'red',
                 'CRITICAL': 'red,bg_white',
             },
         )
 
-        
-
         # Rotating file handler for debug messages
-        debug_file_handler = RotatingFileHandler(filename=f'Logs/Debug/{app_name}_debug.log', maxBytes=1000000, backupCount=100)
+        debug_file_handler = RotatingFileHandler(
+            filename=f'Logs/Debug/{app_name}_debug.log',
+            maxBytes=1000000,
+            backupCount=100)
         debug_file_handler.setLevel(logging.DEBUG)
         debug_file_handler.setFormatter(formatter)
 
         # Rotating file handler for info messages
-        info_file_handler = RotatingFileHandler(filename=f'Logs/Info/{app_name}_info.log', maxBytes=1000000, backupCount=100)
+        info_file_handler = RotatingFileHandler(
+            filename=f'Logs/Info/{app_name}_info.log',
+            maxBytes=1000000,
+            backupCount=100)
         info_file_handler.setLevel(logging.INFO)
         info_file_handler.setFormatter(formatter)
 
@@ -82,7 +91,6 @@ class Logger:
         self._logger.addHandler(stream_handler)
 
         logging.addLevelName(self.VERBOSE, "VERBOSE-1")
-
 
     def create_directories(self):
         """ Ensure directories for the log files are availalbe """
@@ -115,7 +123,7 @@ class Logger:
         Pretty logging for nested objects
         Use Logger.INFO/DEBUG/VERBOSE etc. for loglevel
         """
-        
+
         formatted_record = pprint.pformat(object, indent=4).split("\n")
         for line in formatted_record:
             self._logger.log(loglevel, line, stacklevel=2, *args, **kwargs)
@@ -130,14 +138,14 @@ class TimeSeriesLogger:
     #
     #from cb_secrets import INFLUXDB2_BUCKET, INFLUXDB2_TOKEN, INFLUXDB2_ORG, INFLUXDB2_URL
     ##query_api = client.query_api()
-    #    
+    #
     #def record_price_data(type, value, symbol="BTC", brokerage="CoinbasePro", category="Crypto"):
     #    """ type should be either Price or Balance """
     #    with InfluxDBClient(url=INFLUXDB2_URL, token=INFLUXDB2_TOKEN, org=INFLUXDB2_ORG) as client:
     #        with client.write_api(write_options=SYNCHRONOUS) as write_api:
     #            tags = {
     #                "Category": category,
-    #                "Brokerage": brokerage, 
+    #                "Brokerage": brokerage,
     #                "Symbol": symbol,
     #            }
     #            fields = {

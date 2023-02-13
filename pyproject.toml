@@ -19,3 +19,7 @@ build-backend = "setuptools.build_meta"
 
 [project.urls]
 "Homepage" = "https://github.com/bmccool/pyMcCool"
+
+[tool.yapf]
+based_on_style = "pep8"
+spaces_beffore_comment = 4

@@ -3,6 +3,10 @@ from contextlib import redirect_stdout
 import io
 
 def test_logger():
+    """
+    Basic check of logging functionality to stream logger (assumed file handlers are similar)
+    Check that by default, stream logging level is INFO, and that the log level is included in the printed line.
+    """
     s = io.StringIO()
     with redirect_stdout(s):
         logger = Logger(app_name="test_logger")
