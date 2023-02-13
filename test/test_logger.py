@@ -12,7 +12,7 @@ def test_logger():
         logger = Logger(app_name="test_logger")
         logger.verbose("Test Verbose") # Verbose is below the default threshold, will not be printed
         logger.info("Test Info")
-        logger.debug("Test Debug") # Debug is below the default threshold, will not be printed
+        logger.debug("Test Debug") # Debug is below the default threshold, will not be printe
         logger.warning("Test Warning")
         logger.critical("Test Critical")
         logger.error("Test Error")
