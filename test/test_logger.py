@@ -1,4 +1,4 @@
-from pymccool.logging import Logger
+from pymccool.logging import Logger, LoggerKwargs
 from contextlib import redirect_stdout
 import io
 
@@ -42,6 +42,28 @@ def test_logger_verbose():
         logger = Logger(app_name="test_logger_verbose",
                         default_level=Logger.VERBOSE,
                         stream_level=Logger.VERBOSE)
+        logger.verbose("Test Verbose")
+
+    handlers = logger._logger.handlers
+    assert len(handlers) == 3
+    assert logger._logger.level == logger.VERBOSE
+    assert logger._logger.isEnabledFor(logger.VERBOSE)
+
+    logged_lines = s.getvalue().strip("\n").split("\n")
+    assert len(logged_lines) == 1
+    assert "VERBOSE-1" in logged_lines[0]
+    assert "Test Verbose" in logged_lines[0]
+
+    logger.close()
+
+
+def test_logger_verbose_protocol():
+    s = io.StringIO()
+    with redirect_stdout(s):
+        logger = Logger(
+            LoggerKwargs(app_name="test_logger_verbose",
+                         default_level=Logger.VERBOSE,
+                         stream_level=Logger.VERBOSE))
         logger.verbose("Test Verbose")
 
     handlers = logger._logger.handlers
@@ -128,5 +150,47 @@ def test_multiple_instantion():
     assert "Test Critical" in logged_lines[2]
     assert "ERROR" in logged_lines[3]
     assert "Test Error" in logged_lines[3]
+
+    logger.close()
+
+
+def test_logger_loki():
+    """
+    Basic check of logging functionality to stream logger (assumed file handlers are similar)
+    Check that by default, stream logging level is INFO, and that the log level is included in the printed line.
+    """
+    s = io.StringIO()
+    with redirect_stdout(s):
+        logger = Logger(
+            LoggerKwargs(
+                app_name="test_logger_loki",
+                default_level=Logger.VERBOSE,
+                stream_level=Logger.VERBOSE,
+                grafana_loki_endpoint="http://127.0.0.1:3100/loki/api/v1/push")
+        )
+        logger.verbose("Test Verbose")
+        logger.info("Test Info")
+        logger.debug("Test Debug")
+        logger.warning("Test Warning")
+        logger.critical("Test Critical")
+        logger.error("Test Error")
+
+    handlers = logger._logger.handlers
+    assert len(handlers) == 4
+
+    logged_lines = s.getvalue().strip("\n").split("\n")
+    assert len(logged_lines) == 6
+    assert "VERBOSE-1" in logged_lines[0]
+    assert "Test Verbose" in logged_lines[0]
+    assert "INFO" in logged_lines[1]
+    assert "Test Info" in logged_lines[1]
+    assert "DEBUG" in logged_lines[2]
+    assert "Test Debug" in logged_lines[2]
+    assert "WARNING" in logged_lines[3]
+    assert "Test Warning" in logged_lines[3]
+    assert "CRITICAL" in logged_lines[4]
+    assert "Test Critical" in logged_lines[4]
+    assert "ERROR" in logged_lines[5]
+    assert "Test Error" in logged_lines[5]
 
     logger.close()
