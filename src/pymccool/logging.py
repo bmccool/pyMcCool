@@ -109,13 +109,19 @@ class Logger:
         else:
             stream_handler.setFormatter(formatter)
 
+        # Loki Handler for posting logs directly to Loki
+        loki_handler = self.get_loki_handler(info)
+        if loki_handler:
+            loki_handler.setLevel(info.default_level)
+            loki_handler.setFormatter(formatter)
+
         # Add the log handlers to the logger
         self._logger.addHandler(debug_file_handler)
         self._logger.addHandler(info_file_handler)
         self._logger.addHandler(stream_handler)
-        loki_handler = self.get_loki_handler(info)
+
         if loki_handler:
-            self._logger.addHandler(self.get_loki_handler(info))
+            self._logger.addHandler(loki_handler)
 
         logging.addLevelName(self.VERBOSE, "VERBOSE-1")
 
