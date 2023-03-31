@@ -6,8 +6,10 @@ from typing import Protocol
 import os
 import pprint
 
+
 from colorlog import ColoredFormatter
 from logging_loki import LokiHandler, emitter
+from uuid import UUID, uuid1
 
 
 @dataclass
@@ -18,6 +20,7 @@ class LoggerKwargs:
     stream_level: int = logging.INFO
     grafana_loki_endpoint: str = ""
     grafana_tempo_endpoint: str = ""
+    uuid: UUID = uuid1()
 
 
 class LoggerInfo(Protocol):
@@ -133,7 +136,7 @@ class Logger:
         handler = LokiHandler(
             url=kwargs.grafana_loki_endpoint,
         #tags={"orgID": "1", "application": "AOC2022"}, # TODO make this configurable
-            tags={"orgID": "1"},
+            tags={"orgID": "1", "UUID": str(kwargs.uuid)},
             version="1",
         )
         return handler

@@ -6,21 +6,35 @@ import functools
 from typing import Any, Callable
 
 from opentelemetry.trace import Tracer
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+#from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
+from uuid import UUID, uuid1
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from typing import Any, Callable
 
 
 def get_tracer(service_name: str = "DefaultServiceName",
-               endpoint: str = "localhost:4317") -> Tracer:
+               endpoint: str = "localhost:4317",
+               uuid: UUID = None) -> Tracer:
+    
+    uuid = uuid or uuid1()
+
     # Service name is required for most backends
-    resource = Resource(attributes={SERVICE_NAME: service_name})
+    resource = Resource(attributes={SERVICE_NAME: service_name, "UUID": str(uuid)})
 
     provider = TracerProvider(resource=resource)
+    headers = {
+        "Content-Type": "value=text/plain; charset=utf-8",
+        "user-agent": "OTel-OTLP-Exporter-Python/1.16.0",
+    
+    }
     processor = BatchSpanProcessor(
-        OTLPSpanExporter(endpoint=endpoint, insecure=True))
+        OTLPSpanExporter(endpoint=endpoint, certificate_file=False))
+    
+    
+    
     #processor = BatchSpanProcessor(ConsoleSpanExporter())
 
     provider.add_span_processor(processor)
