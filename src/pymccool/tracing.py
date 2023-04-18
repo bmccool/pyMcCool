@@ -17,7 +17,8 @@ from typing import Any, Callable
 
 def get_tracer(service_name: str = "DefaultServiceName",
                endpoint: str = "localhost:4317",
-               uuid: UUID = None) -> Tracer:
+               uuid: UUID = None,
+               otlp: bool = True) -> Tracer:
     
     uuid = uuid or uuid1()
 
@@ -31,14 +32,17 @@ def get_tracer(service_name: str = "DefaultServiceName",
         "user-agent": "OTel-OTLP-Exporter-Python/1.16.0",
     
     }
-    otlp_processor = BatchSpanProcessor(
-        OTLPSpanExporter(endpoint=endpoint, certificate_file=False))
+
+    if otlp:
+        otlp_processor = BatchSpanProcessor(
+            OTLPSpanExporter(endpoint=endpoint, certificate_file=False))
     
     
     
     console_processor = BatchSpanProcessor(ConsoleSpanExporter(out=open("test_span.json", "w", encoding="utf-8")))
 
-    provider.add_span_processor(otlp_processor)
+    if otlp:
+        provider.add_span_processor(otlp_processor)
     provider.add_span_processor(console_processor)
 
     # Sets the global default tracer provider

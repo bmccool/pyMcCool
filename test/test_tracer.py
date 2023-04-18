@@ -9,9 +9,16 @@ from pymccool.tracing import get_tracer, get_decorator
 
 
 uuid = uuid1()
-tracer = get_tracer(service_name="test_tracer",
+try:
+    tracer = get_tracer(service_name="test_tracer",
+                        endpoint="https://otel-rec.capricorn.brendonmccool.com/v1/traces",
+                        uuid=uuid)
+except: #TODO too wide
+    tracer = get_tracer(service_name="test_tracer",
                     endpoint="https://otel-rec.capricorn.brendonmccool.com/v1/traces",
-                    uuid=uuid)
+                    uuid=uuid,
+                    otlp=False)
+    
 instrument = get_decorator(tracer)
 
 @instrument
