@@ -25,19 +25,21 @@ def get_tracer(service_name: str = "DefaultServiceName",
     resource = Resource(attributes={SERVICE_NAME: service_name, "UUID": str(uuid)})
 
     provider = TracerProvider(resource=resource)
+    
     headers = {
         "Content-Type": "value=text/plain; charset=utf-8",
         "user-agent": "OTel-OTLP-Exporter-Python/1.16.0",
     
     }
-    processor = BatchSpanProcessor(
+    otlp_processor = BatchSpanProcessor(
         OTLPSpanExporter(endpoint=endpoint, certificate_file=False))
     
     
     
-    #processor = BatchSpanProcessor(ConsoleSpanExporter())
+    console_processor = BatchSpanProcessor(ConsoleSpanExporter(out=open("test_span.json", "w", encoding="utf-8")))
 
-    provider.add_span_processor(processor)
+    provider.add_span_processor(otlp_processor)
+    provider.add_span_processor(console_processor)
 
     # Sets the global default tracer provider
     trace.set_tracer_provider(provider)
@@ -52,7 +54,10 @@ def instrument_with(func: Callable[..., Any], tracer: Tracer) -> Callable[..., A
     """ decorator used to create trace info for function calls """
     @functools.wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
-        with tracer.start_as_current_span(name=func.__qualname__) as span:
+        parent_context = trace.get_current_span().get_span_context()
+        parent_link = trace.Link(parent_context)
+        links = [parent_link] if parent_link.context.trace_id is not 0 else None
+        with tracer.start_as_current_span(name=func.__qualname__, links=links) as span:
             span.set_attribute("args", str(args))
             span.set_attribute("kwargs", str(kwargs))
             return func(*args, **kwargs)

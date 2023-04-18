@@ -1,15 +1,20 @@
-from pymccool.logging import Logger, LoggerKwargs
+"""Test module for verifying logger functionality"""
 from contextlib import redirect_stdout
 import io
+import mock
+import pytest
+from pymccool.logging import Logger, LoggerKwargs
+from logging import LogRecord
 
 
 def test_logger():
     """
     Basic check of logging functionality to stream logger (assumed file handlers are similar)
-    Check that by default, stream logging level is INFO, and that the log level is included in the printed line.
+    Check that by default, stream logging level is INFO, and that the log level is included
+    in the printed line.
     """
-    s = io.StringIO()
-    with redirect_stdout(s):
+    string_capture = io.StringIO()
+    with redirect_stdout(string_capture):
         logger = Logger(app_name="test_logger")
         logger.verbose(
             "Test Verbose"
@@ -22,7 +27,7 @@ def test_logger():
         logger.critical("Test Critical")
         logger.error("Test Error")
 
-    logged_lines = s.getvalue().strip("\n").split("\n")
+    logged_lines = string_capture.getvalue().strip("\n").split("\n")
     assert len(logged_lines) == 4
     assert "INFO" in logged_lines[0]
     assert "Test Info" in logged_lines[0]
@@ -37,8 +42,8 @@ def test_logger():
 
 
 def test_logger_verbose():
-    s = io.StringIO()
-    with redirect_stdout(s):
+    string_capture = io.StringIO()
+    with redirect_stdout(string_capture):
         logger = Logger(app_name="test_logger_verbose",
                         default_level=Logger.VERBOSE,
                         stream_level=Logger.VERBOSE)
@@ -49,7 +54,7 @@ def test_logger_verbose():
     assert logger._logger.level == logger.VERBOSE
     assert logger._logger.isEnabledFor(logger.VERBOSE)
 
-    logged_lines = s.getvalue().strip("\n").split("\n")
+    logged_lines = string_capture.getvalue().strip("\n").split("\n")
     assert len(logged_lines) == 1
     assert "VERBOSE-1" in logged_lines[0]
     assert "Test Verbose" in logged_lines[0]
@@ -58,8 +63,8 @@ def test_logger_verbose():
 
 
 def test_logger_verbose_protocol():
-    s = io.StringIO()
-    with redirect_stdout(s):
+    string_capture = io.StringIO()
+    with redirect_stdout(string_capture):
         logger = Logger(
             LoggerKwargs(app_name="test_logger_verbose",
                          default_level=Logger.VERBOSE,
@@ -71,7 +76,7 @@ def test_logger_verbose_protocol():
     assert logger._logger.level == logger.VERBOSE
     assert logger._logger.isEnabledFor(logger.VERBOSE)
 
-    logged_lines = s.getvalue().strip("\n").split("\n")
+    logged_lines = string_capture.getvalue().strip("\n").split("\n")
     assert len(logged_lines) == 1
     assert "VERBOSE-1" in logged_lines[0]
     assert "Test Verbose" in logged_lines[0]
@@ -80,8 +85,8 @@ def test_logger_verbose_protocol():
 
 
 def test_logger_pprint():
-    s = io.StringIO()
-    with redirect_stdout(s):
+    string_capture = io.StringIO()
+    with redirect_stdout(string_capture):
         a = {
             "TODO": ["Don't Change Your Number"],
             "Name": "Jenny",
@@ -92,7 +97,7 @@ def test_logger_pprint():
         logger = Logger(app_name="test_logger", stream_color=False)
         logger.pretty(Logger.INFO, a)
 
-    logged_lines = s.getvalue().strip("\n").split("\n")
+    logged_lines = string_capture.getvalue().strip("\n").split("\n")
     assert len(logged_lines) == 4
 
     line_no = 0
@@ -124,8 +129,8 @@ def test_logger_pprint():
 
 
 def test_multiple_instantion():
-    s = io.StringIO()
-    with redirect_stdout(s):
+    string_capture = io.StringIO()
+    with redirect_stdout(string_capture):
         logger = Logger(app_name="test_logger")
         logger = Logger(app_name="test_logger")
         logger = Logger(app_name="test_logger")
@@ -140,7 +145,7 @@ def test_multiple_instantion():
         logger.critical("Test Critical")
         logger.error("Test Error")
 
-    logged_lines = s.getvalue().strip("\n").split("\n")
+    logged_lines = string_capture.getvalue().strip("\n").split("\n")
     assert len(logged_lines) == 4
     assert "INFO" in logged_lines[0]
     assert "Test Info" in logged_lines[0]
@@ -153,20 +158,20 @@ def test_multiple_instantion():
 
     logger.close()
 
-
-def test_logger_loki():
+@pytest.mark.e2e
+def test_logger_loki_e2e():
     """
     Basic check of logging functionality to stream logger (assumed file handlers are similar)
     Check that by default, stream logging level is INFO, and that the log level is included in the printed line.
     """
-    s = io.StringIO()
-    with redirect_stdout(s):
+    string_capture = io.StringIO()
+    with redirect_stdout(string_capture):
         logger = Logger(
             LoggerKwargs(
                 app_name="test_logger_loki",
                 default_level=Logger.VERBOSE,
                 stream_level=Logger.VERBOSE,
-                grafana_loki_endpoint="http://127.0.0.1:3100/loki/api/v1/push")
+                grafana_loki_endpoint="https://loki.capricorn.brendonmccool.com/loki/api/v1/push")
         )
         logger.verbose("Test Verbose")
         logger.info("Test Info")
@@ -178,7 +183,80 @@ def test_logger_loki():
     handlers = logger._logger.handlers
     assert len(handlers) == 4
 
-    logged_lines = s.getvalue().strip("\n").split("\n")
+    logged_lines = string_capture.getvalue().strip("\n").split("\n")
+    assert len(logged_lines) == 6
+    assert "VERBOSE-1" in logged_lines[0]
+    assert "Test Verbose" in logged_lines[0]
+    assert "INFO" in logged_lines[1]
+    assert "Test Info" in logged_lines[1]
+    assert "DEBUG" in logged_lines[2]
+    assert "Test Debug" in logged_lines[2]
+    assert "WARNING" in logged_lines[3]
+    assert "Test Warning" in logged_lines[3]
+    assert "CRITICAL" in logged_lines[4]
+    assert "Test Critical" in logged_lines[4]
+    assert "ERROR" in logged_lines[5]
+    assert "Test Error" in logged_lines[5]
+
+    logger.close()
+
+def test_logger_loki_unit():
+    """
+    Basic check of logging functionality to stream logger (assumed file handlers are similar)
+    Check that by default, stream logging level is INFO, and that the log level is included in the printed line.
+    """
+    string_capture = io.StringIO()
+    with redirect_stdout(string_capture):
+        logger = Logger(
+            LoggerKwargs(
+                app_name="test_logger_loki",
+                default_level=Logger.VERBOSE,
+                stream_level=Logger.VERBOSE,
+                grafana_loki_endpoint="https://loki.capricorn.brendonmccool.com/loki/api/v1/push")
+        )
+        with mock.patch("logging_loki.handlers.LokiHandler.emit") as loki_emit:
+            logger.verbose("Test Verbose")
+            logger.info("Test Info")
+            logger.debug("Test Debug")
+            logger.warning("Test Warning")
+            logger.critical("Test Critical")
+            logger.error("Test Error")
+
+            assert loki_emit.call_count == 6
+            assert loki_emit.call_args_list[0][0][0].name == "test_logger_loki"
+            assert loki_emit.call_args_list[0][0][0].levelno == 5
+            assert loki_emit.call_args_list[0][0][0].levelname == "VERBOSE-1"
+            assert loki_emit.call_args_list[0][0][0].msg == "Test Verbose"
+            
+            assert loki_emit.call_args_list[1][0][0].name == "test_logger_loki"
+            assert loki_emit.call_args_list[1][0][0].levelno == 20
+            assert loki_emit.call_args_list[1][0][0].levelname == "INFO"
+            assert loki_emit.call_args_list[1][0][0].msg == "Test Info"
+
+            assert loki_emit.call_args_list[2][0][0].name == "test_logger_loki"
+            assert loki_emit.call_args_list[2][0][0].levelno == 10
+            assert loki_emit.call_args_list[2][0][0].levelname == "DEBUG"
+            assert loki_emit.call_args_list[2][0][0].msg == "Test Debug"
+
+            assert loki_emit.call_args_list[3][0][0].name == "test_logger_loki"
+            assert loki_emit.call_args_list[3][0][0].levelno == 30
+            assert loki_emit.call_args_list[3][0][0].levelname == "WARNING"
+            assert loki_emit.call_args_list[3][0][0].msg == "Test Warning"
+
+            assert loki_emit.call_args_list[4][0][0].name == "test_logger_loki"
+            assert loki_emit.call_args_list[4][0][0].levelno == 50
+            assert loki_emit.call_args_list[4][0][0].levelname == "CRITICAL"
+            assert loki_emit.call_args_list[4][0][0].msg == "Test Critical"
+
+            assert loki_emit.call_args_list[5][0][0].name == "test_logger_loki"
+            assert loki_emit.call_args_list[5][0][0].levelno == 40
+            assert loki_emit.call_args_list[5][0][0].levelname == "ERROR"
+            assert loki_emit.call_args_list[5][0][0].msg == "Test Error"
+
+    handlers = logger._logger.handlers
+    assert len(handlers) == 4
+
+    logged_lines = string_capture.getvalue().strip("\n").split("\n")
     assert len(logged_lines) == 6
     assert "VERBOSE-1" in logged_lines[0]
     assert "Test Verbose" in logged_lines[0]

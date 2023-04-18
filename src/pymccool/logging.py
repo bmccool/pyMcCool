@@ -54,7 +54,7 @@ class Logger:
 
     def __init__(self, info: LoggerInfo = None, **kwargs):
         # Handle LoggerInfo or Legacy kwargs implementation
-        if info == None:
+        if info is None:
             info = LoggerKwargs(**kwargs)
 
         # Create logger based on application name
@@ -129,6 +129,9 @@ class Logger:
         logging.addLevelName(self.VERBOSE, "VERBOSE-1")
 
     def get_loki_handler(self, kwargs: LoggerKwargs):
+        """
+        Get handler for emitting messages to a Loki log server
+        """
         if not kwargs.grafana_loki_endpoint:
             return None
 

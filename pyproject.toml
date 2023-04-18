@@ -23,3 +23,8 @@ build-backend = "setuptools.build_meta"
 [tool.yapf]
 based_on_style = "pep8"
 spaces_before_comment = 4
+
+[tool.pytest.ini_options]
+markers = [
+    "e2e: End-to-End, requires tracing and logging setup, not meant to run as unit tests (deselect with '-m \"not e2e\"')"
+]
