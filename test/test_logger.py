@@ -7,6 +7,12 @@ from pymccool.logging import Logger, LoggerKwargs
 from logging import LogRecord
 
 
+@pytest.fixture(autouse=True, scope="module")
+def session_fixture():
+    logger = Logger(app_name="test_logger_loki",)
+    logger.close()
+    yield
+
 def test_logger():
     """
     Basic check of logging functionality to stream logger (assumed file handlers are similar)
@@ -207,53 +213,54 @@ def test_logger_loki_unit():
     """
     string_capture = io.StringIO()
     with redirect_stdout(string_capture):
-        logger = Logger(
+        logger2 = Logger(
             LoggerKwargs(
                 app_name="test_logger_loki",
                 default_level=Logger.VERBOSE,
                 stream_level=Logger.VERBOSE,
-                grafana_loki_endpoint="https://loki.capricorn.brendonmccool.com/loki/api/v1/push")
+                grafana_loki_endpoint="https://loki.fake.endpoint.com/loki/api/v1/push")
         )
-        with mock.patch("logging_loki.handlers.LokiHandler.emit") as loki_emit:
-            logger.verbose("Test Verbose")
-            logger.info("Test Info")
-            logger.debug("Test Debug")
-            logger.warning("Test Warning")
-            logger.critical("Test Critical")
-            logger.error("Test Error")
 
-            assert loki_emit.call_count == 6
-            assert loki_emit.call_args_list[0][0][0].name == "test_logger_loki"
-            assert loki_emit.call_args_list[0][0][0].levelno == 5
-            assert loki_emit.call_args_list[0][0][0].levelname == "VERBOSE-1"
-            assert loki_emit.call_args_list[0][0][0].msg == "Test Verbose"
-            
-            assert loki_emit.call_args_list[1][0][0].name == "test_logger_loki"
-            assert loki_emit.call_args_list[1][0][0].levelno == 20
-            assert loki_emit.call_args_list[1][0][0].levelname == "INFO"
-            assert loki_emit.call_args_list[1][0][0].msg == "Test Info"
+    with mock.patch("logging_loki.handlers.LokiHandler.emit") as loki_emit:
+        logger2.verbose("Test Verbose")
+        logger2.info("Test Info")
+        logger2.debug("Test Debug")
+        logger2.warning("Test Warning")
+        logger2.critical("Test Critical")
+        logger2.error("Test Error")
 
-            assert loki_emit.call_args_list[2][0][0].name == "test_logger_loki"
-            assert loki_emit.call_args_list[2][0][0].levelno == 10
-            assert loki_emit.call_args_list[2][0][0].levelname == "DEBUG"
-            assert loki_emit.call_args_list[2][0][0].msg == "Test Debug"
+        assert loki_emit.call_count == 6
+        assert loki_emit.call_args_list[0][0][0].name == "test_logger_loki"
+        assert loki_emit.call_args_list[0][0][0].levelno == 5
+        assert loki_emit.call_args_list[0][0][0].levelname == "VERBOSE-1"
+        assert loki_emit.call_args_list[0][0][0].msg == "Test Verbose"
+        
+        assert loki_emit.call_args_list[1][0][0].name == "test_logger_loki"
+        assert loki_emit.call_args_list[1][0][0].levelno == 20
+        assert loki_emit.call_args_list[1][0][0].levelname == "INFO"
+        assert loki_emit.call_args_list[1][0][0].msg == "Test Info"
 
-            assert loki_emit.call_args_list[3][0][0].name == "test_logger_loki"
-            assert loki_emit.call_args_list[3][0][0].levelno == 30
-            assert loki_emit.call_args_list[3][0][0].levelname == "WARNING"
-            assert loki_emit.call_args_list[3][0][0].msg == "Test Warning"
+        assert loki_emit.call_args_list[2][0][0].name == "test_logger_loki"
+        assert loki_emit.call_args_list[2][0][0].levelno == 10
+        assert loki_emit.call_args_list[2][0][0].levelname == "DEBUG"
+        assert loki_emit.call_args_list[2][0][0].msg == "Test Debug"
 
-            assert loki_emit.call_args_list[4][0][0].name == "test_logger_loki"
-            assert loki_emit.call_args_list[4][0][0].levelno == 50
-            assert loki_emit.call_args_list[4][0][0].levelname == "CRITICAL"
-            assert loki_emit.call_args_list[4][0][0].msg == "Test Critical"
+        assert loki_emit.call_args_list[3][0][0].name == "test_logger_loki"
+        assert loki_emit.call_args_list[3][0][0].levelno == 30
+        assert loki_emit.call_args_list[3][0][0].levelname == "WARNING"
+        assert loki_emit.call_args_list[3][0][0].msg == "Test Warning"
 
-            assert loki_emit.call_args_list[5][0][0].name == "test_logger_loki"
-            assert loki_emit.call_args_list[5][0][0].levelno == 40
-            assert loki_emit.call_args_list[5][0][0].levelname == "ERROR"
-            assert loki_emit.call_args_list[5][0][0].msg == "Test Error"
+        assert loki_emit.call_args_list[4][0][0].name == "test_logger_loki"
+        assert loki_emit.call_args_list[4][0][0].levelno == 50
+        assert loki_emit.call_args_list[4][0][0].levelname == "CRITICAL"
+        assert loki_emit.call_args_list[4][0][0].msg == "Test Critical"
 
-    handlers = logger._logger.handlers
+        assert loki_emit.call_args_list[5][0][0].name == "test_logger_loki"
+        assert loki_emit.call_args_list[5][0][0].levelno == 40
+        assert loki_emit.call_args_list[5][0][0].levelname == "ERROR"
+        assert loki_emit.call_args_list[5][0][0].msg == "Test Error"
+
+    handlers = logger2._logger.handlers
     assert len(handlers) == 4
 
     logged_lines = string_capture.getvalue().strip("\n").split("\n")
@@ -271,4 +278,4 @@ def test_logger_loki_unit():
     assert "ERROR" in logged_lines[5]
     assert "Test Error" in logged_lines[5]
 
-    logger.close()
+    logger2.close()

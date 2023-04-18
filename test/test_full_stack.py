@@ -30,9 +30,9 @@ with redirect_stdout(string_capture):
     )
 
 @pytest.fixture(autouse=True, scope="module")
-def cleanup():
+def session_fixture():
     """
-    Provide a fixture to handle cleanup/teardown for the module
+    Provide a fixture to handle setup/teardown for the module
     """
     yield
     logger.close()
@@ -71,7 +71,6 @@ def set_test_point(temperature: int, voltage: int) -> None:
 def verify_properties(temperature: int, voltage: int) -> None:
     logger.info("Verifying region properties")
     set_test_point(temperature=temperature, voltage=voltage)
-
 
 @pytest.mark.e2e
 def test_region_properties():
