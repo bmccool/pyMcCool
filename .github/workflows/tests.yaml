@@ -39,4 +39,4 @@ jobs:
           pip install pytest
       # Run the tests
       - name: Run Tests
-        run: pytest -m not e2e
+        run: pytest -m "not e2e"
