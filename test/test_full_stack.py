@@ -1,23 +1,28 @@
 """ Tests for logging/tracing combined """
 from contextlib import redirect_stdout
+import functools
 import io
 from uuid import uuid1
 import time
+from typing import Any, Callable
 import random
 import pytest
-from datetime import datetime, timedelta, timezone
-from opentelemetry import trace, baggage
 from pymccool.logging import Logger, LoggerKwargs
 from pymccool.tracing import get_tracer, get_decorator
 
+def mock_decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+    """ Mock Decorator """
+    @functools.wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        return func(*args, **kwargs)
+    return wrapper
+
+def get_mock_decorator():
+    """ Return mock tracing decorator as paceholder """
+    return mock_decorator
 
 
 uuid = uuid1()
-tracer = get_tracer(service_name="test_tracer",
-                    endpoint="https://otel-rec.capricorn.brendonmccool.com/v1/traces",
-                    uuid=uuid)
-instrument = get_decorator(tracer)
-
 string_capture = io.StringIO()
 with redirect_stdout(string_capture):
     logger = Logger(
@@ -29,11 +34,19 @@ with redirect_stdout(string_capture):
             uuid=uuid)
     )
 
+instrument = mock_decorator
+
 @pytest.fixture(autouse=True, scope="module")
 def session_fixture():
     """
     Provide a fixture to handle setup/teardown for the module
     """
+    global instrument
+    global uuid
+    tracer = get_tracer(service_name="test_tracer",
+                        endpoint="https://otel-rec.capricorn.brendonmccool.com/v1/traces",
+                        uuid=uuid)
+    instrument = get_decorator(tracer)
     yield
     logger.close()
 

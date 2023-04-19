@@ -60,7 +60,7 @@ def instrument_with(func: Callable[..., Any], tracer: Tracer) -> Callable[..., A
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         parent_context = trace.get_current_span().get_span_context()
         parent_link = trace.Link(parent_context)
-        links = [parent_link] if parent_link.context.trace_id is not 0 else None
+        links = [parent_link] if parent_link.context.trace_id != 0 else None
         with tracer.start_as_current_span(name=func.__qualname__, links=links) as span:
             span.set_attribute("args", str(args))
             span.set_attribute("kwargs", str(kwargs))
