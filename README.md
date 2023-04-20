@@ -6,8 +6,11 @@
 
 # Usage
 - For basic, no-nonsense console and file logging:
-    `from pymccool.logging import Logger`
-    `logger = Logger(app_name="<your app name>")`
+  ```
+  from pymccool.logging import Logger
+  logger = Logger(app_name="<your app name>")
+  ```
+
 - For more options, use LoggerKwargs
     ```
     from pymccool.logging import Logger, LoggerKwargs
