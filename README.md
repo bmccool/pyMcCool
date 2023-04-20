@@ -19,3 +19,21 @@
                 grafana_loki_endpoint="https://loki.end.point.com/loki/api/v1/push")
     )
     ```
+
+- To use the Tracer:
+  ```
+  from uuid import uuid1
+  from pymccool.tracing import get_tracer, get_decorator
+  from pymccool.logging import Logger, LoggerKwargs
+  logger = Logger(
+          LoggerKwargs(
+              app_name="test_logger_loki",
+              default_level=Logger.VERBOSE,
+              stream_level=Logger.VERBOSE,
+              grafana_loki_endpoint="https://loki.end.point.com/loki/api/v1/push")
+  )
+  tracer = get_tracer(service_name="test_tracer",
+                      endpoint="https://otel-rec.end.point.com/v1/traces",
+                      uuid=UUID)
+  instrument_decorator = get_decorator(e2e_tracer)
+  ```
