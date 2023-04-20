@@ -9,7 +9,7 @@ from logging import LogRecord
 
 @pytest.fixture(autouse=True, scope="module")
 def session_fixture():
-    logger = Logger(app_name="test_logger_loki",)
+    logger = Logger(app_name="test_logger_loki")
     logger.close()
     yield
 
