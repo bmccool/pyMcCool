@@ -25,7 +25,7 @@ def func_d(*args, **kwargs):
     func_c()
 
 @pytest.mark.e2e
-def test_tracer():
+def test_tracer(tracer_e2e_fixture):
     """
     Basic tracer test
     """
@@ -45,7 +45,7 @@ def datetime2ns(dtime: datetime) -> int:
     return int(nanos)
 
 @pytest.mark.e2e
-def test_tracer_custom_time(e2e_tracer):
+def test_tracer_custom_time(e2e_tracer, tracer_e2e_fixture):
     tracer: Tracer = e2e_tracer
     start_time = datetime.now()# - timedelta(hours=12)
     with tracer.start_as_current_span(name="CustomTimeSpan", start_time=datetime2ns(start_time), end_on_exit=False) as span:
@@ -60,11 +60,11 @@ def stackable_function(recursions: int, sleep_time_s: float):
         stackable_function(recursions=recursions, sleep_time_s=sleep_time_s)
 
 @pytest.mark.e2e
-def test_tracer_stacking():
+def test_tracer_stacking(tracer_e2e_fixture):
     stackable_function(5, 0.01)
 
-@pytest.fixture(autouse=True, scope="module")
-def tracer_session_fixture(e2e_instrument):
+@pytest.fixture(scope="module")
+def tracer_e2e_fixture(e2e_instrument):
     """
     Provide a fixture to handle setup/teardown for the module
     Note 1: Because the instrument decorator relies on external services 
