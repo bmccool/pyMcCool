@@ -211,6 +211,7 @@ def test_logger_loki_unit():
     Basic check of logging functionality to stream logger (assumed file handlers are similar)
     Check that by default, stream logging level is INFO, and that the log level is included in the printed line.
     """
+    assert False
     string_capture = io.StringIO()
     with redirect_stdout(string_capture):
         logger2 = Logger(
