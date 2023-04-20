@@ -5,6 +5,7 @@ import mock
 import pytest
 from pymccool.logging import Logger, LoggerKwargs
 from logging import LogRecord
+from e2e_setup import LOKI_ENDPOINT
 
 
 @pytest.fixture(autouse=True, scope="module")
@@ -177,7 +178,7 @@ def test_logger_loki_e2e():
                 app_name="test_logger_loki",
                 default_level=Logger.VERBOSE,
                 stream_level=Logger.VERBOSE,
-                grafana_loki_endpoint="https://loki.capricorn.brendonmccool.com/loki/api/v1/push")
+                grafana_loki_endpoint=LOKI_ENDPOINT)
         )
         logger.verbose("Test Verbose")
         logger.info("Test Info")
