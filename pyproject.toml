@@ -1,5 +1,6 @@
 [project]
 name = "pymccool"
+dynamic = ["version"]
 authors = [
   { name="Brendon McCool", email="brendonmccool@gmail.com" },
 ]
