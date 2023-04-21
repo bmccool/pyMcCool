@@ -6,13 +6,13 @@
 
 # Usage
 - For basic, no-nonsense console and file logging:
-  ```
+  ```python
   from pymccool.logging import Logger
   logger = Logger(app_name="<your app name>")
   ```
 
 - For more options, use LoggerKwargs
-    ```
+    ```python
     from pymccool.logging import Logger, LoggerKwargs
     logger = Logger(
             LoggerKwargs(
@@ -24,7 +24,7 @@
     ```
 
 - To use the Tracer:
-  ```
+  ```python
   from uuid import uuid1
   from pymccool.tracing import get_tracer, get_decorator
   from pymccool.logging import Logger, LoggerKwargs
