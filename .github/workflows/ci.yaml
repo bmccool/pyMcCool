@@ -47,8 +47,8 @@ jobs:
         uses: chartboost/ruff-action@v1
 
       # Generate Documentation
-    - name: Build documentation and examples
-      run: |
-        pip install -r docs/requirements.txt
-        sphinx-build -b html docs docs/_build
-        sphinx-build -b doctest docs docs/_build      
+      - name: Build documentation and examples
+        run: |
+          pip install -r docs/requirements.txt
+          sphinx-build -b html docs docs/_build
+          sphinx-build -b doctest docs docs/_build      
