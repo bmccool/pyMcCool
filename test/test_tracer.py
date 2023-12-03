@@ -2,10 +2,8 @@
 from datetime import datetime, timedelta
 import time
 import mock
-from uuid import uuid1
 import pytest
 from opentelemetry.trace import Tracer
-from pymccool.tracing import get_tracer, get_decorator
 
 def func_a(*args, **kwargs):
     func_b()
