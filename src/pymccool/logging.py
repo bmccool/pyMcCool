@@ -16,7 +16,7 @@ from uuid import UUID, uuid1
 class LoggerKwargs:
     app_name: str = "default_logger"
     default_level: int = logging.DEBUG
-    stream_color: bool = None
+    stream_color: bool = True
     stream_level: int = logging.INFO
     grafana_loki_endpoint: str = ""
     grafana_tempo_endpoint: str = ""
