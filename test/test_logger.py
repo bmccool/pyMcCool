@@ -280,3 +280,23 @@ def test_logger_loki_unit():
     assert "Test Error" in logged_lines[5]
 
     logger2.close()
+
+def test_issue_14():
+    """
+    Basic check of logging functionality to stream logger (assumed file handlers are similar)
+    Check that by default, stream logging level is INFO, and that the log level is included
+    in the printed line.
+    """
+    string_capture = io.StringIO()
+    with redirect_stdout(string_capture):
+        logger = Logger(app_name="test_logger")
+        logger.info("Test Info", end="")
+        logger.info("- Test Info")
+
+    logged_lines = string_capture.getvalue().strip("\n").split("\n")
+    assert len(logged_lines) == 1
+    assert "INFO" in logged_lines[0]
+    assert "Test Info" in logged_lines[0]
+
+
+    logger.close()
