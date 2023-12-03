@@ -7,9 +7,11 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 import os
 import sys
+from importlib.metadata import version as get_version
+
+# Add the project to the path so that autodoc can find it
 sys.path.insert(0, os.path.abspath(os.path.join('..', 'src', 'pymccool')))
 
-from importlib.metadata import version as get_version
 project: str = 'pymccool'
 copyright: str  = '2023, Brendon McCool'
 author: str = 'Brendon McCool'
