@@ -33,8 +33,8 @@ def test_tracer_unit():
     """
     Basic tracer test with mocked calls
     """
-    with mock.patch("opentelemetry.trace.Tracer.start_as_current_span") as start_as_current_span:
-        with mock.patch("opentelemetry.trace.span.Span.set_attribute") as set_attribute:
+    with mock.patch("opentelemetry.trace.Tracer.start_as_current_span"):
+        with mock.patch("opentelemetry.trace.span.Span.set_attribute"):
             func_a()
 
 
