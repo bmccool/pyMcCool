@@ -12,6 +12,13 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+dependencies = [
+    "colorlog",
+    "mock",
+    "opentelemetry-exporter-otlp-proto-grpc",
+    "opentelemetry-exporter-otlp-proto-http",
+    "python-logging-loki"
+]
 
 [build-system]
 requires = ["setuptools", "setuptools_scm[toml]>=6.2"]
