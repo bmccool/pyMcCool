@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/bmccool/pyMcCool/graph/badge.svg?token=T7L4GHQT67)](https://codecov.io/gh/bmccool/pyMcCool)
+
 # Installation
   - `pip install pymccool`
 
