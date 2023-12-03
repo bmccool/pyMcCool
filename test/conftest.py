@@ -1,13 +1,13 @@
-import functools
+""" Toplevel Conftest for pytest """
 import io
 from contextlib import redirect_stdout
 from uuid import uuid1
-from typing import Any, Callable
 import pytest
 from opentelemetry.trace import Tracer
+from e2e_setup import OTEL_ENDPOINT, LOKI_ENDPOINT
+
 from pymccool.tracing import get_tracer, get_decorator
 from pymccool.logging import Logger, LoggerKwargs
-from e2e_setup import OTEL_ENDPOINT, LOKI_ENDPOINT
 
 UUID = uuid1()
 

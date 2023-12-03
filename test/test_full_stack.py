@@ -1,15 +1,7 @@
 """ Tests for logging/tracing combined """
-from contextlib import redirect_stdout
-from collections import namedtuple
-import functools
-import io
-from uuid import uuid1
-import time
-from typing import Any, Callable
 import random
 import pytest
-from pymccool.logging import Logger, LoggerKwargs
-from pymccool.tracing import get_tracer, get_decorator
+from pymccool.logging import Logger
 
 
 @pytest.fixture(autouse=True, scope="module")

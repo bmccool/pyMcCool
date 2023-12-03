@@ -2,10 +2,8 @@
 from datetime import datetime, timedelta
 import time
 import mock
-from uuid import uuid1
 import pytest
 from opentelemetry.trace import Tracer
-from pymccool.tracing import get_tracer, get_decorator
 
 def func_a(*args, **kwargs):
     func_b()
@@ -35,8 +33,8 @@ def test_tracer_unit():
     """
     Basic tracer test with mocked calls
     """
-    with mock.patch("opentelemetry.trace.Tracer.start_as_current_span") as start_as_current_span:
-        with mock.patch("opentelemetry.trace.span.Span.set_attribute") as set_attribute:
+    with mock.patch("opentelemetry.trace.Tracer.start_as_current_span"):
+        with mock.patch("opentelemetry.trace.span.Span.set_attribute"):
             func_a()
 
 

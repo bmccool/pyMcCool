@@ -21,10 +21,18 @@ dependencies = [
 ]
 
 [build-system]
-requires = ["setuptools", "setuptools_scm[toml]>=6.2"]
+requires = ["setuptools", "setuptools_scm[toml]>=6.2", "python-semantic-release"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
+
+[tool.semantic_release]
+version_variable = "pyproject.toml:version" # version location
+branch = "main"                             # branch to make releases of
+changelog_file = "CHANGELOG.md"             # changelog file
+upload_to_release = true                    # auto-create GitHub release
+upload_to_pypi = false                      # don't auto-upload to PyPI
+patch_without_tag = true                    # patch release by default
 
 [project.urls]
 "Homepage" = "https://github.com/bmccool/pyMcCool"

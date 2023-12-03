@@ -14,6 +14,17 @@ from uuid import UUID, uuid1
 
 @dataclass
 class LoggerKwargs:
+    """
+    Class containing all kwargs for the Logger class
+
+    :param app_name: Name of the application
+    :param default_level: Logging level for the application
+    :param stream_color: Enable or disable colors for the stream handler
+    :param stream_level: Logging level for the stream handler
+    :param grafana_loki_endpoint: URL for the Grafana Loki endpoint
+    :param grafana_tempo_endpoint: URL for the Grafana Tempo endpoint
+    :param uuid: UUID for the application instance
+    """
     app_name: str = "default_logger"
     default_level: int = logging.DEBUG
     stream_color: bool = True

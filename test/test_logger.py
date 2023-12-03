@@ -3,9 +3,8 @@ from contextlib import redirect_stdout
 import io
 import mock
 import pytest
-from pymccool.logging import Logger, LoggerKwargs
-from logging import LogRecord
 from e2e_setup import LOKI_ENDPOINT
+from pymccool.logging import Logger, LoggerKwargs
 
 
 @pytest.fixture(autouse=True, scope="module")
