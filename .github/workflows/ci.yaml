@@ -42,6 +42,12 @@ jobs:
       - name: Run Tests
         run: coverage run -m pytest -k "not e2e"
 
+      # Upload coverage reports to Codecov
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
       # Lint with Ruff
       - name: Lint with Ruff
         uses: chartboost/ruff-action@v1
