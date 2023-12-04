@@ -87,7 +87,7 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         force: "patch" # Force all commits to main to at least be a patch release
-        commit: "true" # Commit changes locally
-        push: "true" # Push local commits to Git repository
+        commit: "false" # Commit changes locally
+        push: "false" # Push local commits to Git repository
         changelog: "true" # Update the changelog
         
