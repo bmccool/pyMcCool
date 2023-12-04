@@ -1,4 +1,6 @@
 [![codecov](https://codecov.io/gh/bmccool/pyMcCool/graph/badge.svg?token=T7L4GHQT67)](https://codecov.io/gh/bmccool/pyMcCool)
+[![docs](https://readthedocs.org/projects/pymccool/badge/?version=latest)](https://pymccool.readthedocs.io/en/latest/)
+[![PyPI version](https://badge.fury.io/py/pymccool.svg)](https://badge.fury.io/py/pymccool)
 
 # Installation
   - `pip install pymccool`
