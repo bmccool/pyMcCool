@@ -9,6 +9,10 @@ This means the final commit must conform to header/body/footer:
 <BLANK LINE>
 <footer>
 
+With a Squash Merge, this would look like this:
+Commit Message: <header>
+Optional Extended Desription: <body> <BLANK LINE> <footer>
+
 If this is a breaking change (Breaks backwards compatibility) you MUST including BREAKING CHANGE in the squash merge for this PR.  E.g.
 
 ------------------------------------------------------------
