@@ -40,7 +40,7 @@ jobs:
           pip install pytest pytest-cov
       # Run the tests
       - name: Run Tests
-        run: pytest --cov -k "not e2e"
+        run: pytest --cov pymccool -k "not e2e"
 
       # Upload coverage reports to Codecov
       - name: Upload coverage reports to Codecov
