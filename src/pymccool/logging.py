@@ -85,10 +85,10 @@ class Logger:
         # Create the formatter for the logs
         # TODO Create colored logs
         formatter = logging.Formatter(
-            '[%(asctime)s:%(levelname)-8s] %(name)s.%(module)s.%(funcName)s:%(lineno)d -> %(message)s'
+            '[%(asctime)s:%(levelname)-8s] %(name)s|%(funcName)s|> %(module)s.py:%(lineno)d -> %(message)s'
         )
         formatter_c = ColoredFormatter(
-            '%(log_color)s[%(asctime)s:%(levelname)-8s] %(name)s.%(module)s.%(funcName)s:%(lineno)d -> %(reset)s%(message)s',
+            '%(log_color)s[%(asctime)s:%(levelname)-8s] %(name)s|%(funcName)s|> %(module)s.py:%(lineno)d -> %(reset)s%(message)s',
             reset=True,
             log_colors={
                 'DEBUG': 'cyan',

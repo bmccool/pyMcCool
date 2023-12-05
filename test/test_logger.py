@@ -108,26 +108,26 @@ def test_logger_pprint():
 
     line_no = 0
     assert "INFO" in logged_lines[line_no]
-    assert "test_logger.test_logger.test_logger_pprint" in logged_lines[
+    assert "test_logger|test_logger_pprint|> test_logger.py" in logged_lines[
         line_no]
     assert "'Name': 'Jenny'" in logged_lines[line_no]
 
     line_no += 1
     assert "INFO" in logged_lines[line_no]
-    assert "test_logger.test_logger.test_logger_pprint" in logged_lines[
+    assert "test_logger|test_logger_pprint|> test_logger.py" in logged_lines[
         line_no]
     assert "'Number': 8675309," in logged_lines[line_no]
 
     line_no += 1
     assert "INFO" in logged_lines[line_no]
-    assert "test_logger.test_logger.test_logger_pprint" in logged_lines[
+    assert "test_logger|test_logger_pprint|> test_logger.py" in logged_lines[
         line_no]
     assert "'Numbers': ['Eight', 'Six', 'Seven', 'Five', 'Three', 'Oh', 'Nine']," in logged_lines[
         line_no]
 
     line_no += 1
     assert "INFO" in logged_lines[line_no]
-    assert "test_logger.test_logger.test_logger_pprint" in logged_lines[
+    assert "test_logger|test_logger_pprint|> test_logger.py" in logged_lines[
         line_no]
     assert "'TODO': [\"Don't Change Your Number\"]}" in logged_lines[line_no]
 
