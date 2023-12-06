@@ -24,7 +24,7 @@
                 grafana_loki_endpoint="https://loki.end.point.com/loki/api/v1/push")
     )
     ```
-
+ 
 - To use the Tracer:
   ```python
   from uuid import uuid1
