@@ -9,7 +9,7 @@
 # Usage
 - For basic, no-nonsense console and file logging:
   ```python
-  from pymccool.logging import Logger
+  from pymccool.logging import Logger 
   logger = Logger(app_name="<your app name>")
   ```
 
