@@ -1,6 +1,7 @@
 """ A class for math operations and utilities """
 from dataclasses import dataclass
-from typing import Iterator, Self
+from typing import Iterator
+from typing_extensions import Self
 
 class InclusiveRange:
     """ A class for inclusive ranges """
