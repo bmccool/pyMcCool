@@ -13,6 +13,18 @@ class InclusiveRange:
         """ Passes calls through to underlying range object """
         return getattr(self._range, name)
 
+    def __iter__(self) -> Iterator[int]:
+        return self._range.__iter__()
+
+    def __str__(self) -> str:
+        return f"[{self._range.start}, {self._stop}]"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+    def __len__(self) -> int:
+        return len(self._range)
+
     @property
     def start(self) -> int:
         """ The start of the range """
@@ -26,9 +38,8 @@ class InclusiveRange:
         """ The step of the range """
         return self._range.step
 
-    def __iter__(self) -> Iterator[int]:
-        """ Iterate over the range """
-        return self._range.__iter__()
+    
+
 
 @dataclass
 class Point:

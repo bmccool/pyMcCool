@@ -15,7 +15,10 @@ def test_inclusive_range():
     assert r.step == 1
     for i in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
         assert i in r
-
+        assert r.__getattr__("__contains__")(i) # pylint: disable=unnecessary-dunder-call
+    assert len(r) == 10
+    assert repr(r) == "[1, 10]"
+    assert str(r) == "[1, 10]"
 
 
 @pytest.mark.parametrize(
@@ -43,6 +46,8 @@ class TestPoint:
         assert p1 != Point(p1.x,     p1.y + 1)
         assert p2 == Point(p2.x,     p2.y    )
         assert p2 != Point(p2.x + 1, p2.y    )
+        assert p1 != (p1.x, p1.y)
+        assert p2 != (p2.x, p2.y)
 
     def test_hash(self, p1, p2):
         """ Test the hash method """
