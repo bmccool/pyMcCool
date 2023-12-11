@@ -103,7 +103,8 @@ class Logger:
         debug_file_handler = RotatingFileHandler(
             filename=f'Logs/Debug/{info.app_name}_debug.log',
             maxBytes=1000000,
-            backupCount=100)
+            backupCount=100,
+            encoding='utf-8')
         debug_file_handler.setLevel(logging.DEBUG)
         debug_file_handler.setFormatter(formatter)
 
@@ -111,7 +112,8 @@ class Logger:
         info_file_handler = RotatingFileHandler(
             filename=f'Logs/Info/{info.app_name}_info.log',
             maxBytes=1000000,
-            backupCount=100)
+            backupCount=100,
+            encoding='utf-8')
         info_file_handler.setLevel(logging.INFO)
         info_file_handler.setFormatter(formatter)
 
