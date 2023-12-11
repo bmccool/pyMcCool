@@ -1,3 +1,8 @@
 *.egg-info*
 *__pycache__*
 *build/*
+.coverage
+Logs/*
+venv/*
+test_span.json
+.vscode/*
