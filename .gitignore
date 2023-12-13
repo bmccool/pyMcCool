@@ -6,3 +6,4 @@ Logs/*
 venv/*
 test_span.json
 .vscode/*
+notebooks/Logs*
