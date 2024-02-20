@@ -57,15 +57,31 @@ class TestPoint:
         assert p2 < Point(p2.x + 1, p2.y - 1)
         assert p2 < Point(p2.x, p2.y + 1)
         assert p2 < Point(p2.x + 1, p2.y + 1)
+        assert Point(p1.x + 1, p1.y - 1) > p1
+        assert Point(p1.x, p1.y + 1) > p1
+        assert Point(p1.x + 1, p1.y + 1) > p1
+        assert Point(p2.x + 1, p2.y - 1) > p2
+        assert Point(p2.x, p2.y + 1) > p2
+        assert Point(p2.x + 1, p2.y + 1) > p2
 
-    def test_gt(self, p1, p2):
+    def test_le(self, p1, p2):
         """ Test the gt method """
-        assert p1 > Point(p1.x - 1, p1.y + 1)
-        assert p1 > Point(p1.x, p1.y - 1)
-        assert p1 > Point(p1.x - 1, p1.y - 1)
-        assert p2 > Point(p2.x - 1, p2.y + 1)
-        assert p2 > Point(p2.x, p2.y - 1)
-        assert p2 > Point(p2.x - 1, p2.y - 1)
+        assert p1 >= Point(p1.x - 1, p1.y + 1)
+        assert p1 >= Point(p1.x, p1.y - 1)
+        assert p1 >= Point(p1.x - 1, p1.y - 1)
+        assert p2 >= Point(p2.x - 1, p2.y + 1)
+        assert p2 >= Point(p2.x, p2.y - 1)
+        assert p2 >= Point(p2.x - 1, p2.y - 1)
+        assert Point(p1.x - 1, p1.y + 1) <= p1
+        assert Point(p1.x, p1.y - 1) <= p1
+        assert Point(p1.x - 1, p1.y - 1) <= p1
+        assert Point(p2.x - 1, p2.y + 1) <= p2
+        assert Point(p2.x, p2.y - 1) <= p2
+        assert Point(p2.x - 1, p2.y - 1) <= p2
+        assert p1 <= p1
+        assert p1 >= p1
+        assert p2 <= p2
+        assert p2 >= p2
 
     def test_hash(self, p1, p2):
         """ Test the hash method """
