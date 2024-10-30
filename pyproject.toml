@@ -17,7 +17,8 @@ dependencies = [
     "mock",
     "opentelemetry-exporter-otlp-proto-grpc",
     "opentelemetry-exporter-otlp-proto-http",
-    "python-logging-loki"
+    "pytest>=8.3.3",
+    "python-logging-loki",
 ]
 
 [build-system]

@@ -11,13 +11,31 @@ from opentelemetry.trace import Tracer
 #from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
+import base64
 
+class OpenTelemetryCredentials:
+    def __init__(self, username, token, endpoint):
+        self.username = username
+        self.api_token = token
+        self.api_encoded_token = base64.b64encode(
+            f"{self.username}:{self.api_token}".encode("utf-8")
+        ).decode("utf-8")
+        self.endpoint = endpoint
+        if self.endpoint:
+            self.traces_endpoint = self.endpoint + "/v1/traces"
+            self.metrics_endpoint = self.endpoint + "/v1/metrics"
+            self.logs_endpoint = self.endpoint + "/v1/logs"
 
+def is_configured(self):
+    # Check if all the necessary variables are present
+    return all([self.username, self.api_token, self.endpoint])
 
 def get_tracer(service_name: str = "DefaultServiceName",
                endpoint: str = "localhost:4317",
                uuid: UUID = None,
-               otlp: bool = True) -> Tracer:
+               otlp: bool = True,
+               headers=None,
+               ) -> Tracer:
     """ Creates a tracer with the given service name """
 
     uuid = uuid or uuid1()
@@ -29,7 +47,9 @@ def get_tracer(service_name: str = "DefaultServiceName",
 
     if otlp:
         otlp_processor = BatchSpanProcessor(
-            OTLPSpanExporter(endpoint=endpoint, certificate_file=False))
+            OTLPSpanExporter(endpoint=endpoint,
+                             headers=headers)
+        )
 
     console_processor = BatchSpanProcessor(
         ConsoleSpanExporter(out=open("test_span.json", "w", encoding="utf-8")))

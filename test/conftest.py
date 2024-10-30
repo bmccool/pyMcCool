@@ -4,9 +4,9 @@ from contextlib import redirect_stdout
 from uuid import uuid1
 import pytest
 from opentelemetry.trace import Tracer
-from e2e_setup import OTEL_ENDPOINT, LOKI_ENDPOINT
+from e2e_setup import OTEL_ENDPOINT, LOKI_ENDPOINT, OTEL_USERNAME, OTEL_TOKEN
 
-from pymccool.tracing import get_tracer, get_decorator
+from pymccool.tracing import get_tracer, get_decorator, OpenTelemetryCredentials
 from pymccool.logging import Logger, LoggerKwargs
 
 UUID = uuid1()
@@ -24,9 +24,13 @@ def e2e_tracer() -> Tracer:
     """
     Returns an tracer that will send traces to the e2e test environment
     """
+    credentials = OpenTelemetryCredentials(username=OTEL_USERNAME,
+                                             token=OTEL_TOKEN,
+                                             endpoint=OTEL_ENDPOINT)
     tracer = get_tracer(service_name="test_tracer",
-                        endpoint=OTEL_ENDPOINT,
-                        uuid=UUID)
+                        endpoint=credentials.traces_endpoint,
+                        uuid=UUID,
+                        headers={"authorization": f"Basic {credentials.api_encoded_token}"})
     yield tracer
 
 @pytest.fixture(scope="session")
