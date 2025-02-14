@@ -141,7 +141,8 @@ class Logger:
         formatter = formatter or self.formatter
         handler = RotatingFileHandler(filename=filename,
                                       maxBytes=1000000,
-                                      backupCount=100)
+                                      backupCount=100,
+                                      encoding="utf-8")
         handler.setLevel(level)
         handler.setFormatter(formatter)
         self._logger.addHandler(handler)
