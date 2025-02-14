@@ -77,10 +77,10 @@ jobs:
 
     # Define job steps
     steps:
-    - name: Set up Python 3.9
+    - name: Set up Latest Python 3.x
       uses: actions/setup-python@v5
       with:
-        python-version: 3.9
+        python-version: "3.x"
 
     - name: Check-out repository
       uses: actions/checkout@v4
