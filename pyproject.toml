@@ -15,9 +15,10 @@ classifiers = [
 dependencies = [
     "colorlog",
     "mock",
+    "mypy>=1.14.1",
     "opentelemetry-exporter-otlp-proto-grpc",
     "opentelemetry-exporter-otlp-proto-http",
-    "python-logging-loki"
+    "python-logging-loki",
 ]
 
 [build-system]
@@ -44,4 +45,10 @@ spaces_before_comment = 4
 [tool.pytest.ini_options]
 markers = [
     "e2e: End-to-End, requires tracing and logging setup, not meant to run as unit tests (deselect with '-m \"not e2e\"')"
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+    "yapf>=0.43.0",
 ]

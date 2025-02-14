@@ -6,7 +6,6 @@ from typing import Protocol
 import os
 import pprint
 
-
 from colorlog import ColoredFormatter
 from logging_loki import LokiHandler, emitter
 from uuid import UUID, uuid1
@@ -31,6 +30,7 @@ class LoggerKwargs:
     stream_level: int = logging.INFO
     grafana_loki_endpoint: str = ""
     grafana_tempo_endpoint: str = ""
+    base_path: str = os.path.join(os.getcwd(), "Logs")
     uuid: UUID = uuid1()
 
 
@@ -67,6 +67,7 @@ class Logger:
         # Handle LoggerInfo or Legacy kwargs implementation
         if info is None:
             info = LoggerKwargs(**kwargs)
+        self.config = info
 
         # Create logger based on application name
         self.app_name = info.app_name
@@ -80,14 +81,14 @@ class Logger:
         self._logger.setLevel(info.default_level)
 
         # Ensure directories are created for log files (Can this be configured?  To not happen automatically?)
-        self.create_directories()
+        self.create_directories(info.base_path)
 
         # Create the formatter for the logs
         # TODO Create colored logs
-        formatter = logging.Formatter(
+        self.formatter = logging.Formatter(
             '[%(asctime)s:%(levelname)-8s] %(name)s|%(funcName)s|> %(module)s.py:%(lineno)d -> %(message)s'
         )
-        formatter_c = ColoredFormatter(
+        self.colored_formatter = ColoredFormatter(
             '%(log_color)s[%(asctime)s:%(levelname)-8s] %(name)s|%(funcName)s|> %(module)s.py:%(lineno)d -> %(reset)s%(message)s',
             reset=True,
             log_colors={
@@ -100,44 +101,58 @@ class Logger:
         )
 
         # Rotating file handler for debug messages
-        debug_file_handler = RotatingFileHandler(
-            filename=f'Logs/Debug/{info.app_name}_debug.log',
-            maxBytes=1000000,
-            backupCount=100)
-        debug_file_handler.setLevel(logging.DEBUG)
-        debug_file_handler.setFormatter(formatter)
+        self.create_file_handler(level=logging.DEBUG)
 
         # Rotating file handler for info messages
-        info_file_handler = RotatingFileHandler(
-            filename=f'Logs/Info/{info.app_name}_info.log',
-            maxBytes=1000000,
-            backupCount=100)
-        info_file_handler.setLevel(logging.INFO)
-        info_file_handler.setFormatter(formatter)
+        self.create_file_handler(level=logging.INFO)
 
         # Stream Handler for light messaging
         stream_handler = logging.StreamHandler(sys.stdout)
         stream_handler.setLevel(info.stream_level)
         if info.stream_color:
-            stream_handler.setFormatter(formatter_c)
+            stream_handler.setFormatter(self.colored_formatter)
         else:
-            stream_handler.setFormatter(formatter)
+            stream_handler.setFormatter(self.formatter)
 
         # Loki Handler for posting logs directly to Loki
         loki_handler = self.get_loki_handler(info)
         if loki_handler:
             loki_handler.setLevel(info.default_level)
-            loki_handler.setFormatter(formatter)
+            loki_handler.setFormatter(self.formatter)
 
         # Add the log handlers to the logger
-        self._logger.addHandler(debug_file_handler)
-        self._logger.addHandler(info_file_handler)
         self._logger.addHandler(stream_handler)
 
         if loki_handler:
             self._logger.addHandler(loki_handler)
 
         logging.addLevelName(self.VERBOSE, "VERBOSE-1")
+
+    def create_file_handler(self,
+                            filename=None,
+                            level=None,
+                            formatter=None) -> RotatingFileHandler:
+        """
+        Create a rotating file handler for the logger
+        """
+        name_lookup = {
+            self.CRITICAL: "Critical",
+            self.ERROR: "Error",
+            self.WARNING: "Warning",
+            self.INFO: "Info",
+            self.DEBUG: "Debug",
+            self.VERBOSE: "Verbose"
+        }
+        filename = filename or f'{self.config.base_path}/{name_lookup[level]}/{self.config.app_name}_{name_lookup[level].lower()}.log'
+        level = level or self.config.default_level
+        formatter = formatter or self.formatter
+        handler = RotatingFileHandler(filename=filename,
+                                      maxBytes=1000000,
+                                      backupCount=100)
+        handler.setLevel(level)
+        handler.setFormatter(formatter)
+        self._logger.addHandler(handler)
+        return handler
 
     def get_loki_handler(self, kwargs: LoggerKwargs):
         """
@@ -150,15 +165,18 @@ class Logger:
         handler = LokiHandler(
             url=kwargs.grafana_loki_endpoint,
         #tags={"orgID": "1", "application": "AOC2022"}, # TODO make this configurable
-            tags={"orgID": "1", "UUID": str(kwargs.uuid)},
+            tags={
+                "orgID": "1",
+                "UUID": str(kwargs.uuid)
+            },
             version="1",
         )
         return handler
 
-    def create_directories(self):
+    def create_directories(self, base_path):
         """ Ensure directories for the log files are availalbe """
-        for subpath in ["Logs/Info", "Logs/Debug"]:
-            path = os.path.join(os.getcwd(), subpath)
+        for subpath in ["Info", "Debug"]:
+            path = os.path.join(base_path, subpath)
             try:
                 os.makedirs(path)
             except FileExistsError:
