@@ -1,7 +1,7 @@
 """ Tests for logging/tracing combined """
-import random
-import pytest
-from pymccool.logging import Logger
+#import random
+#import pytest
+#from pymccool.logging import Logger
 
 
 #@pytest.fixture(autouse=True, scope="module")
