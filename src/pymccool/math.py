@@ -57,6 +57,24 @@ class Point:
         if isinstance(other, Point):
             return self.x == other.x and self.y == other.y
         return False
+    
+    def __lt__(self, other: Self):
+        if isinstance(other, Point):
+            if self.x < other.x:
+                return True
+            elif self.x == other.x:
+                if self.y < other.y:
+                    return True
+        return False
+    
+    def __le__(self, other: Self):
+        if isinstance(other, Point):
+            if self.x < other.x:
+                return True
+            elif self.x == other.x:
+                if self.y <= other.y:
+                    return True
+        return False
 
     def __hash__(self):
         return hash((self.x, self.y))

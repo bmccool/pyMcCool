@@ -294,3 +294,34 @@ def test_logger_loki_unit():
     assert "Test Error" in logged_lines[5]
 
     logger2.close()
+
+def test_logger_unicode():
+    """
+    Check that the logger can handle unicode characters
+    """
+    # Delete any preexisting logs
+    with open("Logs/Info/test_unicode_info.log", "w", encoding="utf-8") as log_file:
+        log_file.write("")
+
+    string_capture = io.StringIO()
+    with redirect_stdout(string_capture):
+        logger = Logger(app_name="test_unicode")
+        logger.info("┏━┓")
+        logger.info("┃ ┃")
+        logger.info("┗━┛")
+
+    logged_lines = string_capture.getvalue().strip("\n").split("\n")
+    assert len(logged_lines) == 3
+    assert "┏━┓" in logged_lines[0]
+    assert "┃ ┃" in logged_lines[1]
+    assert "┗━┛" in logged_lines[2]
+
+    with open("Logs/Info/test_unicode_info.log", "r", encoding="utf-8") as log_file:
+        log_lines = log_file.read().strip("\n").split("\n")
+        assert len(log_lines) == 3
+        assert "┏━┓" in log_lines[0]
+        assert "┃ ┃" in log_lines[1]
+        assert "┗━┛" in log_lines[2]
+    
+
+    logger.close()
