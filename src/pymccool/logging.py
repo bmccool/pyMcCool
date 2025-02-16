@@ -48,7 +48,7 @@ class Logger:
     VERBOSE = 5
     NOTSET = 0
 
-    def __init__(self, config: Optional[LoggerKwargs]=None, **kwargs):
+    def __init__(self, config: Optional[LoggerKwargs] = None, **kwargs):
         """
         Create a logger with the given LoggerKwargs configuration.  If no configuration is provided,
         a sensible default will be used.  Or pass individual configuration options as keyword
@@ -105,12 +105,16 @@ class Logger:
 
         logging.addLevelName(self.VERBOSE, "VERBOSE-1")
 
-    def create_stream_handler(self, level=None, formatter=None, stream=None) -> logging.StreamHandler:
+    def create_stream_handler(self,
+                              level=None,
+                              formatter=None,
+                              stream=None) -> logging.StreamHandler:
         """
         Create a stream handler for the logger
         """
         level = level or self.config.stream_level
-        formatter = formatter or self.colored_formatter if self.config.stream_color else self.formatter
+        formatter = formatter or (self.colored_formatter if
+                                  self.config.stream_color else self.formatter)
         stream = stream or sys.stdout
         handler = logging.StreamHandler(stream)
         handler.setLevel(level)
@@ -134,8 +138,8 @@ class Logger:
             self.VERBOSE: "Verbose",
         }
         filename = (
-            filename
-            or f"{self.config.base_path}/{name_lookup[level]}/{self.config.app_name}_{name_lookup[level].lower()}.log"
+            filename or
+            f"{self.config.base_path}/{name_lookup[level]}/{self.config.app_name}_{name_lookup[level].lower()}.log"
         )
         level = level or self.config.default_level
         formatter = formatter or self.formatter
