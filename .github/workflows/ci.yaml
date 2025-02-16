@@ -58,9 +58,11 @@ jobs:
           pip install -r docs/requirements.txt
           sphinx-build -b html docs docs/_build
           sphinx-build -b doctest docs docs/_build
+  cd-release:
+    name: Create Release and upload to Test PyPI
+    environment:
+      name: testpypi
 
-
-  cd:
     # Only run this job if tests pass
     needs: test
 
@@ -119,5 +121,49 @@ jobs:
     - name: Publish package
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
+        verbose: true    
+  cd-publish:
+    name: Publish to PyPI.org
+    environment:
+      name: pypi
+
+    # Only run this job if cd-release pass
+    needs: cd-release
+
+    # Only run this job if new work is pushed to "main"
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    # Set up operating system
+    runs-on: ubuntu-latest
+
+    # Permissions needed
+    permissions:
+      contents: write
+      id-token: write
+
+    # Define job steps
+    steps:
+    - name: Set up Latest Python 3.x
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.x"
+
+    - name: Check-out repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+      # Install Build Tools
+    - name: Install Build Tools
+      run: python3 -m pip install --upgrade build && python3 -m build
+
+    # Publish to PyPI
+    - name: Publish package
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
         verbose: true
         
+    # Test Install from PyPI
+    - name: Test install from PyPI
+      run: |
+          pip install pymccool
