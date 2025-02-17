@@ -110,7 +110,7 @@ class Logger:
                               formatter=None,
                               stream=None) -> logging.StreamHandler:
         """
-        Create a stream handler for the logger
+        Create a stream handler for the logger 
         """
         level = level or self.config.stream_level
         formatter = formatter or (self.colored_formatter if
