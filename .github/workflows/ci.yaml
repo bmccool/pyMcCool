@@ -116,12 +116,6 @@ jobs:
           --index-url https://test.pypi.org/simple/ \
           --extra-index-url https://pypi.org/simple \
           pymccool
-
-    # Publish to PyPI
-    - name: Publish package
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        verbose: true    
   cd-publish:
     name: Publish to PyPI.org
     environment:
